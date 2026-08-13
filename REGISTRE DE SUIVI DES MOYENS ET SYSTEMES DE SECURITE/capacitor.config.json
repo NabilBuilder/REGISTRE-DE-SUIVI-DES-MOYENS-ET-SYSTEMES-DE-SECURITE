@@ -1,0 +1,22 @@
+{
+  "appId": "com.gardnet.registresecurite",
+  "appName": "Registre Securite v2.1.0",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "backgroundColor": "#1e3a8a",
+      "androidSplashResourceName": "splash",
+      "showSpinner": true,
+      "spinnerColor": "#ffffff"
+    }
+  }
+}

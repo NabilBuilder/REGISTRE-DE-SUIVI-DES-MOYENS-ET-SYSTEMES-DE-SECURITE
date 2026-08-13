@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Registre de Securite</string>
+    <string name="title_activity_main">Registre de Securite</string>
+    <string name="package_name">com.gardnet.registresecurite</string>
+    <string name="custom_url_scheme">com.gardnet.registresecurite</string>
+</resources>

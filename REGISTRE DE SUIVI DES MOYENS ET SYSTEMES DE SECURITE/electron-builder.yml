@@ -1,0 +1,26 @@
+appId: com.gardnet.registresecurite
+productName: Registre_de_Securite
+copyright: Copyright © 2026 GARDNET SERVICES
+directories:
+  output: build-exe
+files:
+  - dist/**/*
+  - public/logo.ico
+  - electron-main.cjs
+  - package.json
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: public/logo-256.ico
+  artifactName: Registre_de_Securite_${version}_Setup.exe
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: public/logo-256.ico
+  uninstallerIcon: public/logo-256.ico
+  installerHeaderIcon: public/logo-256.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Registre de Sécurité
