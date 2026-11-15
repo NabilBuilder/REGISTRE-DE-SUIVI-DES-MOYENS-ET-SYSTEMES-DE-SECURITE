@@ -19,7 +19,11 @@ function createWindow() {
     title: 'Registre de Securite — GARDNET SERVICES',
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      sandbox: true,
+      webSecurity: true,
+      allowRunningInsecureContent: false,
+      webviewTag: false
     },
     autoHideMenuBar: true,
     show: false
@@ -30,8 +34,21 @@ function createWindow() {
   } else {
     const distPath = path.join(__dirname, 'dist');
     protocol.handle('app', (request) => {
-      let filePath = path.join(distPath, new URL(request.url).pathname);
-      if (filePath.endsWith('/') || !path.extname(filePath)) {
+      const requestUrl = new URL(request.url);
+      let pathname;
+      try {
+        pathname = decodeURIComponent(requestUrl.pathname);
+      } catch {
+        return new Response('Not found', { status: 404 });
+      }
+
+      let filePath = path.resolve(distPath, `.${pathname}`);
+      const relativePath = path.relative(distPath, filePath);
+      if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+        return new Response('Not found', { status: 404 });
+      }
+
+      if (pathname.endsWith('/') || !path.extname(filePath)) {
         filePath = path.join(distPath, 'index.html');
       }
       return net.fetch('file://' + filePath);
@@ -54,8 +71,22 @@ function createWindow() {
   win.setMenu(null);
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    try {
+      const externalUrl = new URL(url);
+      if (externalUrl.protocol === 'https:' || externalUrl.protocol === 'mailto:') {
+        shell.openExternal(externalUrl.href);
+      }
+    } catch {
+      // Reject malformed or unsupported external URLs.
+    }
     return { action: 'deny' };
+  });
+
+  win.webContents.on('will-navigate', (event, url) => {
+    const allowed = isDev
+      ? url.startsWith('http://localhost:5174/')
+      : url.startsWith('app://');
+    if (!allowed) event.preventDefault();
   });
 }
 
