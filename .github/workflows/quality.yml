@@ -1,0 +1,32 @@
+name: Quality checks
+
+on:
+  push:
+    branches:
+      - main
+      - maintenance/stability-preserving-improvements
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: REGISTRE DE SUIVI DES MOYENS ET SYSTEMES DE SECURITE
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: REGISTRE DE SUIVI DES MOYENS ET SYSTEMES DE SECURITE/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Run regression tests
+        run: npm test
+      - name: Build production app
+        run: npm run build
