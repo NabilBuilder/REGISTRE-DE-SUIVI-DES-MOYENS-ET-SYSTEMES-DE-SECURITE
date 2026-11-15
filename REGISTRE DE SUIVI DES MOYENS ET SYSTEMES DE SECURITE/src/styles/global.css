@@ -206,6 +206,35 @@
   }
 }
 
+
+/* Subtle visual refinement: keep the original register layout and paper format. */
+@media screen {
+  body {
+    background: #f1f5f9;
+    color: #1e293b;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .a4-page {
+    border: 1px solid #dbe3ee;
+    border-radius: 6px;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.10);
+  }
+
+  .a4-page input:focus-visible,
+  .a4-page textarea:focus-visible,
+  .a4-page select:focus-visible,
+  button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  .toolbar-toggle {
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+  }
+}
+
 @page {
   size: A4 portrait;
   margin: 0;
