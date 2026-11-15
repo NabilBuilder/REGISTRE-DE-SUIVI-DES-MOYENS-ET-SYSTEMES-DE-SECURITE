@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import useLocalStorage from '@hooks/useLocalStorage';
 import { getCurrentWeekRange, calculateDocDate, generateRefFromDate, getMonthWeeks, getAdjacentMonth, getMonthLabel } from '@utils/dateUtils';
 import { CONFIG } from '@utils/config';
+import { loadDraft } from '../utils/draftStorage';
 
 const SETTINGS_KEY = 'registre_settings';
 const DRAFT_KEY = 'registre_draft';
@@ -105,11 +105,9 @@ function migrateData(raw) {
 export default function useRegistreData() {
   const [settings, setSettings] = useState(loadSettings);
 
-  const loadInitialData = () => {
-    return getDefaultData();
-  };
-
-  const [data, setData] = useState(loadInitialData);
+  const [data, setData] = useState(() =>
+    loadDraft(() => window.localStorage, getDefaultData, migrateData)
+  );
   const [hasChanges, setHasChanges] = useState(false);
   const saveTimerRef = useRef(null);
   const historyRef = useRef([]);

@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { LOGO_BASE64, STAMP_BASE64 } from './config';
+import { escapeHtml } from './escapeHtml';
 
 const FONT = "'Times New Roman', Georgia, serif";
 
@@ -89,8 +90,8 @@ export async function generateRegistrePDF(data) {
     rowsHTML += `
       <tr>
         <td style="border:1.5px solid black; padding:5px 6px; width:35%; font-size:9px; vertical-align:top; line-height:1.4; font-family:${FONT};">${ROWS[i].label}</td>
-        <td style="border:1.5px solid black; padding:5px 6px; width:20%; text-align:center; vertical-align:middle; font-weight:bold; font-size:10px; background:white; color:black; font-family:${FONT};">${status}</td>
-        <td style="border:1.5px solid black; padding:5px 6px; width:45%; font-size:10px; vertical-align:top; font-family:${FONT};">${comment}</td>
+        <td style="border:1.5px solid black; padding:5px 6px; width:20%; text-align:center; vertical-align:middle; font-weight:bold; font-size:10px; background:white; color:black; font-family:${FONT};">${escapeHtml(status)}</td>
+        <td style="border:1.5px solid black; padding:5px 6px; width:45%; font-size:10px; vertical-align:top; font-family:${FONT};">${escapeHtml(comment)}</td>
       </tr>`;
   }
 
@@ -98,7 +99,7 @@ export async function generateRegistrePDF(data) {
   let controlsHTML = '';
   for (const c of controls) {
     if (c.date && c.time) {
-      controlsHTML += `<div style="margin-bottom:2px; font-size:10px; font-family:${FONT};">• ${fmtDate(c.date)} à ${fmtTime(c.time)}</div>`;
+      controlsHTML += `<div style="margin-bottom:2px; font-size:10px; font-family:${FONT};">• ${escapeHtml(fmtDate(c.date))} à ${escapeHtml(fmtTime(c.time))}</div>`;
     }
   }
 
@@ -110,11 +111,11 @@ export async function generateRegistrePDF(data) {
     const dShort = abs.absentDate ? fmtDate(abs.absentDate) : '';
     const reps = (abs.replacements || []).map(r => r.agent).filter(Boolean).join(', ');
     absencesHTML += `<div style="margin-bottom:2px; ${idx < absences.length - 1 ? 'padding-bottom:3px; border-bottom:1px solid #ccc;' : ''} font-size:9px; font-family:${FONT};">
-      <span style="font-weight:bold;">${dShort}</span>
+      <span style="font-weight:bold;">${escapeHtml(dShort)}</span>
       <span style="font-weight:bold;">Absent:</span>
-      <span style="color:#dc2626; font-weight:bold;">${abs.absentAgent}</span>
+      <span style="color:#dc2626; font-weight:bold;">${escapeHtml(abs.absentAgent)}</span>
       <span>→ Rempl.:</span>
-      <span style="color:#2563eb; font-weight:bold;">${reps || '—'}</span>
+      <span style="color:#2563eb; font-weight:bold;">${escapeHtml(reps || '—')}</span>
     </div>`;
   }
 
@@ -143,7 +144,7 @@ export async function generateRegistrePDF(data) {
               <span style="color:#c41e3a; font-weight:bold; font-size:11px;">Restreint</span>
             </td>
             <td style="border:1.5px solid black; padding:6px 8px; text-align:right; vertical-align:middle; font-family:${FONT};">
-              <span style="font-weight:bold; font-size:11px;">DATE: ${date}</span>
+              <span style="font-weight:bold; font-size:11px;">DATE: ${escapeHtml(date)}</span>
             </td>
           </tr>
 
@@ -157,20 +158,20 @@ export async function generateRegistrePDF(data) {
           <!-- Row 3: Site | Réf | SUPERVISEUR (centered) -->
           <tr>
             <td style="border:1.5px solid black; padding:6px 8px; font-family:${FONT};">
-              <span style="font-weight:bold; font-size:11px;">Site : ${site}</span>
+              <span style="font-weight:bold; font-size:11px;">Site : ${escapeHtml(site)}</span>
             </td>
             <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};">
-              <span style="font-weight:bold; font-size:11px;">Réf : ${docRef}</span>
+              <span style="font-weight:bold; font-size:11px;">Réf : ${escapeHtml(docRef)}</span>
             </td>
             <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};">
-              <span style="font-weight:bold; font-size:11px;">SUPERVISEUR : ${supervisor}</span>
+              <span style="font-weight:bold; font-size:11px;">SUPERVISEUR : ${escapeHtml(supervisor)}</span>
             </td>
           </tr>
 
           <!-- Row 4: Periode — colspan=3 (grey background) -->
           <tr>
             <td colSpan="3" style="border:1.5px solid black; padding:4px 8px; text-align:center; background:#f3f4f6; font-family:${FONT};">
-              <span style="font-weight:bold; font-size:11px; color:#374151;">═══ Periode ═══ DU ${weekStart} AU ${weekEnd} ════════════</span>
+              <span style="font-weight:bold; font-size:11px; color:#374151;">═══ Periode ═══ DU ${escapeHtml(weekStart)} AU ${escapeHtml(weekEnd)} ════════════</span>
             </td>
           </tr>
 
@@ -271,15 +272,15 @@ export async function generateRegistrePDFBlob(data) {
     rowsHTML += `
       <tr>
         <td style="border:1.5px solid black; padding:5px 6px; width:35%; font-size:9px; vertical-align:top; line-height:1.4; font-family:${FONT};">${ROWS[i].label}</td>
-        <td style="border:1.5px solid black; padding:5px 6px; width:20%; text-align:center; vertical-align:middle; font-weight:bold; font-size:10px; background:white; color:black; font-family:${FONT};">${status}</td>
-        <td style="border:1.5px solid black; padding:5px 6px; width:45%; font-size:10px; vertical-align:top; font-family:${FONT};">${comment}</td>
+        <td style="border:1.5px solid black; padding:5px 6px; width:20%; text-align:center; vertical-align:middle; font-weight:bold; font-size:10px; background:white; color:black; font-family:${FONT};">${escapeHtml(status)}</td>
+        <td style="border:1.5px solid black; padding:5px 6px; width:45%; font-size:10px; vertical-align:top; font-family:${FONT};">${escapeHtml(comment)}</td>
       </tr>`;
   }
 
   let controlsHTML = '';
   for (const c of controls) {
     if (c.date && c.time) {
-      controlsHTML += `<div style="margin-bottom:2px; font-size:10px; font-family:${FONT};">• ${fmtDate(c.date)} à ${fmtTime(c.time)}</div>`;
+      controlsHTML += `<div style="margin-bottom:2px; font-size:10px; font-family:${FONT};">• ${escapeHtml(fmtDate(c.date))} à ${escapeHtml(fmtTime(c.time))}</div>`;
     }
   }
 
@@ -290,11 +291,11 @@ export async function generateRegistrePDFBlob(data) {
     const dShort = abs.absentDate ? fmtDate(abs.absentDate) : '';
     const reps = (abs.replacements || []).map(r => r.agent).filter(Boolean).join(', ');
     absencesHTML += `<div style="margin-bottom:2px; ${idx < absences.length - 1 ? 'padding-bottom:3px; border-bottom:1px solid #ccc;' : ''} font-size:9px; font-family:${FONT};">
-      <span style="font-weight:bold;">${dShort}</span>
+      <span style="font-weight:bold;">${escapeHtml(dShort)}</span>
       <span style="font-weight:bold;">Absent:</span>
-      <span style="color:#dc2626; font-weight:bold;">${abs.absentAgent}</span>
+      <span style="color:#dc2626; font-weight:bold;">${escapeHtml(abs.absentAgent)}</span>
       <span>→ Rempl.:</span>
-      <span style="color:#2563eb; font-weight:bold;">${reps || '—'}</span>
+      <span style="color:#2563eb; font-weight:bold;">${escapeHtml(reps || '—')}</span>
     </div>`;
   }
 
@@ -309,15 +310,15 @@ export async function generateRegistrePDFBlob(data) {
           <tr>
             <td style="border:1.5px solid black; padding:6px 8px; vertical-align:middle; font-family:${FONT};"><img src="${LOGO_BASE64}" style="height:39px; width:auto; display:block;" /></td>
             <td style="border:1.5px solid black; padding:6px 8px; text-align:center; vertical-align:middle; font-family:${FONT};"><span style="color:#c41e3a; font-weight:bold; font-size:11px;">Restreint</span></td>
-            <td style="border:1.5px solid black; padding:6px 8px; text-align:right; vertical-align:middle; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">DATE: ${date}</span></td>
+            <td style="border:1.5px solid black; padding:6px 8px; text-align:right; vertical-align:middle; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">DATE: ${escapeHtml(date)}</span></td>
           </tr>
           <tr><td colSpan="3" style="border:1.5px solid black; padding:8px; text-align:center; font-family:${FONT};"><span style="font-weight:bold; font-size:13px;">REGISTRE DE SUIVI DES MOYENS ET SYSTEMES DE SECURITE</span></td></tr>
           <tr>
-            <td style="border:1.5px solid black; padding:6px 8px; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">Site : ${site}</span></td>
-            <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">Réf : ${docRef}</span></td>
-            <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">SUPERVISEUR : ${supervisor}</span></td>
+            <td style="border:1.5px solid black; padding:6px 8px; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">Site : ${escapeHtml(site)}</span></td>
+            <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">Réf : ${escapeHtml(docRef)}</span></td>
+            <td style="border:1.5px solid black; padding:6px 8px; text-align:center; font-family:${FONT};"><span style="font-weight:bold; font-size:11px;">SUPERVISEUR : ${escapeHtml(supervisor)}</span></td>
           </tr>
-          <tr><td colSpan="3" style="border:1.5px solid black; padding:4px 8px; text-align:center; background:#f3f4f6; font-family:${FONT};"><span style="font-weight:bold; font-size:11px; color:#374151;">═══ Periode ═══ DU ${weekStart} AU ${weekEnd} ════════════</span></td></tr>
+          <tr><td colSpan="3" style="border:1.5px solid black; padding:4px 8px; text-align:center; background:#f3f4f6; font-family:${FONT};"><span style="font-weight:bold; font-size:11px; color:#374151;">═══ Periode ═══ DU ${escapeHtml(weekStart)} AU ${escapeHtml(weekEnd)} ════════════</span></td></tr>
         </tbody>
       </table>
       <table style="width:100%; border-collapse:collapse; border:1.5px solid black; table-layout:fixed; margin-top:0;">
