@@ -14,7 +14,8 @@
     "android:sync": "npx cap sync android",
     "android:build": "npm run build && npx cap sync android",
     "android:apk": "cd android && ./gradlew assembleDebug",
-    "build:apk": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug && node -e \"const fs=require('fs'),p=require('path'),v=require('./package.json').version;fs.mkdirSync('./build-apk',{recursive:true});const src='./android/app/build/outputs/apk/debug/app-debug.apk',dst='./build-apk/Registre_Securite_v'+v+'.apk';fs.copyFileSync(src,dst);console.log('APK v'+v+' -> '+dst);\""
+    "build:apk": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug && node -e \"const fs=require('fs'),p=require('path'),v=require('./package.json').version;fs.mkdirSync('./build-apk',{recursive:true});const src='./android/app/build/outputs/apk/debug/app-debug.apk',dst='./build-apk/Registre_Securite_v'+v+'.apk';fs.copyFileSync(src,dst);console.log('APK v'+v+' -> '+dst);\"",
+    "test": "node --test"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
